@@ -14,6 +14,7 @@ import com.sky.vo.EmployeeLoginVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class EmployeeController {
      */
     @PostMapping("/login")
     @ApiOperation(value = "员工登录")
-    public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
+    public Result<EmployeeLoginVO>           login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
         log.info("员工登录：{}", employeeLoginDTO);
 
         Employee employee = employeeService.login(employeeLoginDTO);
@@ -113,6 +114,33 @@ public class EmployeeController {
         log.info("启用禁用员工账号：{},{}", status, id);
         employeeService.startOrStop(status, id);
             return Result.success();
+    }
+
+    /**
+     * 查询员工信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("查询员工信息")
+    public Result<Employee> getById (@PathVariable Long  id)  {
+        log.info("查询员工信息，员工id为：{}", id);
+        employeeService.getById(id);
+        Employee emp = employeeService.getById(id);
+        return Result.success(emp);
+    }
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("修改员工信息")
+    public Result<Void> update(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("员工信息修改：{}", employeeDTO);
+        employeeService.update(employeeDTO);
+        return Result.success();
     }
 
 }
